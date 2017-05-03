@@ -1,0 +1,67 @@
+<html>
+    <head>
+        <title>meu teste js</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        
+    <head>
+
+    <body ng-app="minhaapp" ng-controller="meuctrl" >
+        
+        nome: <input type="text" ng-model="piada.nome"><br>
+        texto: <input type="text" ng-model="piada.texto"><br>
+        nota: <input type="number" ng-model="piada.nota"><br>
+        adulta: <input type="checkbox" ng-model="piada.adulta"><br>
+        autor: <input type="text" ng-model="piada.autor.nome"><br>
+        {{piada}}
+        <br>
+        <button ng-click="salvar(piada)">Salvar</button>
+        <button ng-click="listar()">listar</button>
+        <div ng-repeat="piada in piadas">
+            <ol>
+                <li>{{piada.nome}}</li>
+                <li>{{piada.nota}}</li>
+                <li>{{piada.autor.nome}}</li>   
+            </ol>
+        </div>
+        
+        <p>Resultado: </p>
+        <p>status:{{status}}</p>
+        <p>erro:{{erro}}</p>
+        <p>resp:{{resp}}</p>
+        <p></p>
+    </body>
+        
+    <script>
+    var app = angular.module('minhaapp', []);
+    
+    var funcbata = function($scope, $http) {
+        
+        $scope.status="parado";
+        
+        $scope.listar = function(){
+            $http.get("http://piada.herokuapp.com/piada")
+            .then(function(resp)){
+                  $scope.status="concluido";
+                  $scope.piadas = resp;
+                  },function(error)=error
+        }
+        
+        $scope.salvar = function(piada){
+            $scope.status="carregando"
+                    
+            $http.post("http://piada.herokuapp.com/piada",piada)
+            .then(function(response){
+                $scope.resp =response;
+            }, function(error){
+                $scope.status="concluido"
+                $scope.erro=error;    
+            }  )
+            console.log("oi");
+        }
+    };
+        
+    app.controller('meuctrl', funcbata);
+    
+    </script>
+        
+</html>
